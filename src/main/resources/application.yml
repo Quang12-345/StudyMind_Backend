@@ -9,6 +9,25 @@ spring:
 server:
   port: ${SERVER_PORT:8080}
 
+app:
+  auto-open-swagger: ${AUTO_OPEN_SWAGGER:true}
+  bootstrap-admin:
+    enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}
+    email: ${BOOTSTRAP_ADMIN_EMAIL:admin@studymind.com}
+    password: ${BOOTSTRAP_ADMIN_PASSWORD:Admin@123456}
+    full-name: System Administrator
+
 logging:
   level:
     com.studymind: INFO
+
+jwt:
+  secret: ${JWT_SECRET:studymind-dev-secret-key-min-32-characters!!}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+  api-docs:
+    path: /v3/api-docs

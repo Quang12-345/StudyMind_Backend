@@ -10,11 +10,27 @@ Backend API cho ứng dụng StudyMind — **Spring Boot 3** + **MongoDB**.
 
 ## Chạy ứng dụng
 
-```bash
-mvn spring-boot:run
+Trong thư mục `StudyMind_Backend`:
+
+**PowerShell** (bắt buộc có `.\` ở đầu):
+
+```powershell
+.\dev
 ```
 
-API mặc định: `http://localhost:8080`
+**CMD** (Command Prompt):
+
+```cmd
+dev
+```
+
+Hoặc: `mvn spring-boot:run`
+
+Sau khi server start xong, **trình duyệt sẽ tự mở Swagger** để test API.  
+Tắt tự mở: `$env:AUTO_OPEN_SWAGGER="false"` rồi chạy lại.
+
+API: `http://localhost:8080`  
+Swagger: `http://localhost:8080/swagger-ui/index.html`
 
 ### Biến môi trường
 

@@ -18,4 +18,17 @@ public class User extends BaseDocument {
     private String fullName;
     private String avatarUrl;
     private UserRole role = UserRole.STUDENT;
+
+    /** MSSV — chỉ dùng cho STUDENT. */
+    @Indexed(unique = true, sparse = true)
+    private String studentCode;
+
+    /** Khoa/bộ môn — chỉ dùng cho LECTURER. */
+    private String department;
+
+    /** Mã giảng viên — chỉ dùng cho LECTURER. */
+    @Indexed(unique = true, sparse = true)
+    private String lecturerCode;
+
+    private Boolean active = true;
 }
