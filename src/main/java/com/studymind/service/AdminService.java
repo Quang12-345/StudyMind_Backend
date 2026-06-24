@@ -1,7 +1,7 @@
 package com.studymind.service;
 
+import com.studymind.dto.auth.CreateAdminRequest;
 import com.studymind.dto.auth.CreateLecturerRequest;
-import com.studymind.dto.auth.CreateUserRequest;
 import com.studymind.dto.auth.UserResponse;
 import com.studymind.exception.BadRequestException;
 import com.studymind.exception.ResourceNotFoundException;
@@ -24,19 +24,15 @@ public class AdminService {
         this.userService = userService;
     }
 
-    public UserResponse createUser(CreateUserRequest request) {
-        if (request.role() == UserRole.LECTURER) {
-            throw new BadRequestException("Use POST /api/v1/admin/lecturers to create lecturer accounts");
-        }
-
+    public UserResponse createAdmin(CreateAdminRequest request) {
         User user = userService.createUser(
                 request.email(),
                 request.password(),
                 request.fullName(),
-                request.role(),
-                request.studentCode(),
-                request.department(),
-                request.lecturerCode()
+                UserRole.ADMIN,
+                null,
+                null,
+                null
         );
         return UserResponse.from(user);
     }

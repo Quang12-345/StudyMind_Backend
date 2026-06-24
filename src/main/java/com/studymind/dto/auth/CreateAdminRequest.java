@@ -1,12 +1,10 @@
 package com.studymind.dto.auth;
 
-import com.studymind.model.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record CreateUserRequest(
+public record CreateAdminRequest(
         @NotBlank(message = "Email is required")
         @Email(message = "Email is invalid")
         String email,
@@ -16,13 +14,6 @@ public record CreateUserRequest(
         String password,
 
         @NotBlank(message = "Full name is required")
-        String fullName,
-
-        @NotNull(message = "Role is required")
-        UserRole role,
-
-        String studentCode,
-        String department,
-        String lecturerCode
+        String fullName
 ) {
 }

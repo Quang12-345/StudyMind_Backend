@@ -1,8 +1,8 @@
 package com.studymind.controller;
 
 import com.studymind.dto.ApiResponse;
+import com.studymind.dto.auth.CreateAdminRequest;
 import com.studymind.dto.auth.CreateLecturerRequest;
-import com.studymind.dto.auth.CreateUserRequest;
 import com.studymind.dto.auth.UserResponse;
 import com.studymind.model.enums.UserRole;
 import com.studymind.service.AdminService;
@@ -37,22 +37,22 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PostMapping("/users")
+    @PostMapping("/admins")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Tạo user STUDENT hoặc ADMIN")
-    public ApiResponse<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
-        return ApiResponse.ok("User created", adminService.createUser(request));
+    @Operation(summary = "Tạo tài khoản ADMIN")
+    public ApiResponse<UserResponse> createAdmin(@Valid @RequestBody CreateAdminRequest request) {
+        return ApiResponse.ok("Admin account created", adminService.createAdmin(request));
     }
 
     @PostMapping("/lecturers")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Cấp tài khoản giảng viên (chỉ ADMIN)")
+    @Operation(summary = "Cấp tài khoản giảng viên (ADMIN)")
     public ApiResponse<UserResponse> createLecturer(@Valid @RequestBody CreateLecturerRequest request) {
         return ApiResponse.ok("Lecturer account created", adminService.createLecturer(request));
     }
 
     @GetMapping("/users")
-    @Operation(summary = "Danh sách user (lọc theo role nếu cần)")
+    @Operation(summary = "Danh sách user")
     public ApiResponse<List<UserResponse>> listUsers(@RequestParam(required = false) UserRole role) {
         return ApiResponse.ok(adminService.listUsers(role));
     }

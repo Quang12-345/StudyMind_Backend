@@ -38,7 +38,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthResponse registerStudent(RegisterStudentRequest request) {
+    public UserResponse registerStudent(RegisterStudentRequest request) {
         User savedUser = userService.createUser(
                 request.email(),
                 request.password(),
@@ -48,7 +48,7 @@ public class AuthService {
                 null,
                 null
         );
-        return buildAuthResponse(savedUser);
+        return UserResponse.from(savedUser);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -82,11 +82,5 @@ public class AuthService {
         User user = userRepository.findByEmail(principal.getEmail())
                 .orElseThrow(() -> new UnauthorizedException("User not found"));
         return UserResponse.from(user);
-    }
-
-    private AuthResponse buildAuthResponse(User user) {
-        UserPrincipal principal = new UserPrincipal(user);
-        String token = jwtService.generateToken(principal);
-        return AuthResponse.of(token, UserResponse.from(user));
     }
 }

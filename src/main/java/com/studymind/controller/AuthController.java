@@ -33,13 +33,13 @@ public class AuthController {
 
     @PostMapping("/register/student")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Đăng ký tài khoản sinh viên (tự đăng ký)")
-    public ApiResponse<AuthResponse> registerStudent(@Valid @RequestBody RegisterStudentRequest request) {
+    @Operation(summary = "Đăng ký tài khoản sinh viên (không trả token — cần login sau)")
+    public ApiResponse<UserResponse> registerStudent(@Valid @RequestBody RegisterStudentRequest request) {
         return ApiResponse.ok("Student registration successful", authService.registerStudent(request));
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Đăng nhập (STUDENT, LECTURER, ADMIN)")
+    @Operation(summary = "Đăng nhập")
     public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ApiResponse.ok(authService.login(request));
     }
