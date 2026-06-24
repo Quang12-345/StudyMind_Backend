@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: studymind-backend
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/studymind}
+      auto-index-creation: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+logging:
+  level:
+    com.studymind: INFO
