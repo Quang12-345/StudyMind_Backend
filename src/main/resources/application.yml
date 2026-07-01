@@ -1,6 +1,10 @@
 spring:
   application:
     name: studymind-backend
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 30MB
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/studymind}
@@ -11,6 +15,9 @@ server:
 
 app:
   auto-open-swagger: ${AUTO_OPEN_SWAGGER:true}
+  storage:
+    upload-dir: ${STORAGE_DIR:uploads}
+    max-file-size-bytes: ${MAX_FILE_SIZE:20971520}
   bootstrap-admin:
     enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}
     email: ${BOOTSTRAP_ADMIN_EMAIL:admin@studymind.com}

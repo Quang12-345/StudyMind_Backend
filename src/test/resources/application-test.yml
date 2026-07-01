@@ -13,5 +13,8 @@ jwt:
 
 app:
   auto-open-swagger: false
+  storage:
+    upload-dir: target/test-uploads
+    max-file-size-bytes: 20971520
   bootstrap-admin:
     enabled: false
