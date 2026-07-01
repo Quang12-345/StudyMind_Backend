@@ -6,10 +6,10 @@ import com.studymind.dto.document.UpdateDocumentRequest;
 import com.studymind.exception.BadRequestException;
 import com.studymind.model.StudyDocument;
 import com.studymind.model.enums.DocumentStatus;
+import com.studymind.repository.CourseRepository;
 import com.studymind.repository.StudyDocumentRepository;
 import com.studymind.service.storage.FileStorageService;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
@@ -30,6 +30,8 @@ public class DocumentService {
     private final DocumentCleanupService documentCleanupService;
     private final FileStorageService fileStorageService;
     private final AiPipelineService aiPipelineService;
+    private final CourseAccessService courseAccessService;
+    private final com.studymind.repository.CourseRepository courseRepository;
     private final long maxFileSizeBytes;
 
     public DocumentService(
@@ -38,6 +40,8 @@ public class DocumentService {
             DocumentCleanupService documentCleanupService,
             FileStorageService fileStorageService,
             AiPipelineService aiPipelineService,
+            CourseAccessService courseAccessService,
+            CourseRepository courseRepository,
             StorageProperties storageProperties
     ) {
         this.documentRepository = documentRepository;
@@ -45,18 +49,22 @@ public class DocumentService {
         this.documentCleanupService = documentCleanupService;
         this.fileStorageService = fileStorageService;
         this.aiPipelineService = aiPipelineService;
+        this.courseAccessService = courseAccessService;
+        this.courseRepository = courseRepository;
         this.maxFileSizeBytes = storageProperties.maxFileSizeBytes();
     }
 
-    public DocumentResponse upload(String userId, MultipartFile file, String title) {
+    public DocumentResponse upload(String userId, String courseId, MultipartFile file, String title) {
+        courseAccessService.requireOwnedCourse(courseId, userId);
         validatePdfFile(file);
 
         String originalFileName = file.getOriginalFilename() != null ? file.getOriginalFilename() : "document.pdf";
-        String storageKey = userId + "/" + UUID.randomUUID() + ".pdf";
+        String storageKey = userId + "/" + courseId + "/" + UUID.randomUUID() + ".pdf";
         fileStorageService.store(file, storageKey);
 
         StudyDocument document = new StudyDocument();
         document.setUserId(userId);
+        document.setCourseId(courseId);
         document.setTitle(title != null && !title.isBlank() ? title.trim() : stripExtension(originalFileName));
         document.setOriginalFileName(originalFileName);
         document.setStorageKey(storageKey);
@@ -66,7 +74,15 @@ public class DocumentService {
         document.setFileHash(computeHash(file));
 
         StudyDocument saved = documentRepository.save(document);
+        refreshCourseDocumentCount(courseId);
         return DocumentResponse.from(saved);
+    }
+
+    public List<DocumentResponse> listByCourse(String courseId, String userId) {
+        courseAccessService.requireOwnedCourse(courseId, userId);
+        return documentRepository.findByCourseIdAndUserIdOrderByCreatedAtDesc(courseId, userId).stream()
+                .map(DocumentResponse::from)
+                .toList();
     }
 
     public List<DocumentResponse> listByUser(String userId) {
@@ -88,9 +104,13 @@ public class DocumentService {
 
     public void delete(String documentId, String userId) {
         StudyDocument document = documentAccessService.requireOwnedDocument(documentId, userId);
+        String courseId = document.getCourseId();
         documentCleanupService.deleteRelatedData(documentId);
         fileStorageService.delete(document.getStorageKey());
         documentRepository.delete(document);
+        if (courseId != null) {
+            refreshCourseDocumentCount(courseId);
+        }
     }
 
     public DocumentResponse process(String documentId, String userId) {
@@ -146,5 +166,12 @@ public class DocumentService {
         } catch (IOException | NoSuchAlgorithmException ex) {
             return null;
         }
+    }
+
+    private void refreshCourseDocumentCount(String courseId) {
+        courseRepository.findById(courseId).ifPresent(course -> {
+            course.setDocumentCount((int) documentRepository.countByCourseId(courseId));
+            courseRepository.save(course);
+        });
     }
 }

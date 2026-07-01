@@ -7,6 +7,7 @@ import java.time.Instant;
 
 public record DocumentResponse(
         String id,
+        String courseId,
         String title,
         String originalFileName,
         DocumentStatus status,
@@ -23,6 +24,7 @@ public record DocumentResponse(
     public static DocumentResponse from(StudyDocument document) {
         return new DocumentResponse(
                 document.getId(),
+                document.getCourseId(),
                 document.getTitle(),
                 document.getOriginalFileName(),
                 document.getStatus(),

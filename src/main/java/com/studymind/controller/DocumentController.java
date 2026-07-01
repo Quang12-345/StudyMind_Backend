@@ -42,13 +42,15 @@ public class DocumentController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Upload PDF")
+    @Operation(summary = "Upload PDF vào khóa học")
     public ApiResponse<DocumentResponse> upload(
             @AuthenticationPrincipal UserPrincipal principal,
+            @RequestPart("courseId") String courseId,
             @RequestPart("file") MultipartFile file,
             @RequestPart(value = "title", required = false) String title
     ) {
-        return ApiResponse.ok("Upload successful", documentService.upload(principal.getId(), file, title));
+        return ApiResponse.ok("Upload successful",
+                documentService.upload(principal.getId(), courseId, file, title));
     }
 
     @GetMapping

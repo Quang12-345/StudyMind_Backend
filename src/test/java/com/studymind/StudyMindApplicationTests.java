@@ -12,6 +12,7 @@ import com.studymind.repository.QuizQuestionRepository;
 import com.studymind.repository.QuizRepository;
 import com.studymind.repository.StudyDocumentRepository;
 import com.studymind.repository.SummaryRepository;
+import com.studymind.repository.CourseRepository;
 import com.studymind.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +36,7 @@ class StudyMindApplicationTests {
     @MockBean private ChatSessionRepository chatSessionRepository;
     @MockBean private ChatMessageRepository chatMessageRepository;
     @MockBean private AiJobRepository aiJobRepository;
+    @MockBean private CourseRepository courseRepository;
 
     @Test
     void contextLoads() {

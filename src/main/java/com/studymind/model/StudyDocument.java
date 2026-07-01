@@ -17,6 +17,9 @@ public class StudyDocument extends BaseDocument {
     @Indexed
     private String userId;
 
+    @Indexed
+    private String courseId;
+
     private String title;
     private String originalFileName;
 

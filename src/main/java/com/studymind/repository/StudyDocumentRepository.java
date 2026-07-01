@@ -9,5 +9,9 @@ public interface StudyDocumentRepository extends MongoRepository<StudyDocument, 
 
     List<StudyDocument> findByUserIdOrderByCreatedAtDesc(String userId);
 
+    List<StudyDocument> findByCourseIdAndUserIdOrderByCreatedAtDesc(String courseId, String userId);
+
+    long countByCourseId(String courseId);
+
     Optional<StudyDocument> findByIdAndUserId(String id, String userId);
 }
